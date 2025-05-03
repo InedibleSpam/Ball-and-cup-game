@@ -1,18 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mycompany.ballcupgame;
+
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
-
-/**
- *
- * @author glaba
- */
 
 public class Main{
     Random ran;
@@ -55,6 +46,7 @@ public class Main{
         for (Cup cup : clist) {
             if (cup.getId() == x){
                 cup.giveBall();
+                System.out.println(cup.getId());
             }else{
                 cup.removeBall();
             }

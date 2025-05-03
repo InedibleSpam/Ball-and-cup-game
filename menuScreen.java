@@ -85,12 +85,14 @@ public class menuScreen extends JFrame {
 
             // Start game
             dispose();
+            App game=new App(username, difficulty);
 
             App.main(username, difficulty);
         });
 
         panel.add(startButton);
         add(panel);
+        
 
     }
 
