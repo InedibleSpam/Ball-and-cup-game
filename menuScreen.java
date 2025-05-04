@@ -2,7 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.*;;
+import java.util.*;
+import java.util.List;;
 
 public class menuScreen extends JFrame {
     private JComboBox<String> difficultySelector;
@@ -80,19 +81,18 @@ public class menuScreen extends JFrame {
                 JOptionPane.showMessageDialog(this, "Please enter a username");
                 return;
             }
-            //Stores difficulty as 0 or 1
-            int difficulty = difficultySelector.getSelectedIndex(); 
+            // Stores difficulty as 0 or 1
+            int difficulty = difficultySelector.getSelectedIndex();
 
             // Start game
             dispose();
-            App game=new App(username, difficulty);
+            App game = new App(username, difficulty);
 
             App.main(username, difficulty);
         });
 
         panel.add(startButton);
         add(panel);
-        
 
     }
 
@@ -103,16 +103,29 @@ public class menuScreen extends JFrame {
             leaderboardArea.setText("No leaderboard data");
             return;
         }
+        List<Score> leaderboard = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            leaderboardArea.setText("");
             String line;
             while ((line = reader.readLine()) != null) {
-                leaderboardArea.append(line + "\n");
+                String[] parts = line.split(" : ");
+                if (parts.length == 2) {
+                    String user = parts[0];
+                    int score = Integer.parseInt(parts[1]);
+                    leaderboard.add(new Score(user, score));
+                }
             }
         } catch (IOException e) {
             leaderboardArea.setText("Error loading leaderboard.");
             e.printStackTrace();
         }
+
+        leaderboard.sort((s1,s2) -> Integer.compare(s2.score, s1.score));
+
+        StringBuilder sb = new StringBuilder();
+        for (Score score : leaderboard){
+            sb.append(score).append("\n");
+        }
+        leaderboardArea.setText(sb.toString());
     }
 
     public static void main(String[] args) {
