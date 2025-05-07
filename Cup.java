@@ -1,37 +1,31 @@
-
-/**
- *
- * @author glaba
- */
 public class Cup {
-    boolean hasBall;
-    int id;
+    private int id;        
+    private boolean hasBall; 
+
     
-    public Cup(int id){
-        this.id=id;
-        hasBall=false;
+    public Cup(int id) {
+        this.id = id;
+        this.hasBall = false; 
     }
+
     
-    public void giveBall(){
-        hasBall=true;
-    }
-    
-    public void removeBall(){
-        hasBall=false;
-        
-    }
-    
-    public boolean checkForBall(){
-        if(hasBall==true){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-    
-    public int getId(){
+    public int getId() {
         return id;
     }
+
+   
+    public boolean hasBall() {
+        return hasBall;
+    }
+
+    public void giveBall() {
+        hasBall = true;
+    }
+
+    
+    public void removeBall() {
+        hasBall = false;
+    }
+
     
 }

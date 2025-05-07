@@ -1,88 +1,139 @@
-
-import java.io.*;
-import java.util.*;
+// Main.java
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class Main {
-    Random ran;
-    ArrayList<Cup> clist;
-    static String user;
-    int score;
-
-    public Main(Random random, int num) {
-        clist = new ArrayList<>();
+    private Random ran; 
+    private ArrayList<Cup> clist; 
+    public Main(Random random, int numCups) {
+        this.clist = new ArrayList<>();
         this.ran = random;
-        for (int i = 1; i <= num; i++) {
+
+        if (numCups <= 0) {
+            throw new IllegalArgumentException("Number of cups must be positive.");
+        }
+
+        // Create the specified number of cups with 1-based IDs
+        for (int i = 1; i <= numCups; i++) {
             Cup cup = new Cup(i);
             clist.add(cup);
         }
+
+        // Randomly place the ball in one cup initially
+        if (!clist.isEmpty()) {
+            int ballHolderIndex = ran.nextInt(clist.size());
+            clist.get(ballHolderIndex).giveBall(); 
+        }
     }
 
+   //Retrieve Cup object by ID
     public Cup getCup(int id) {
         for (Cup cup : clist) {
             if (cup.getId() == id) {
                 return cup;
             }
-
         }
         return null;
     }
 
+    //Shuffles cups and places the ball in a new random cup
     public void shuffle() {
-        int x = ran.nextInt(1, clist.size() + 1);
-        for (Cup cup : clist) {
-            if (cup.getId() == x) {
-                cup.giveBall();
-                System.out.println(cup.getId());
-            } else {
-                cup.removeBall();
+        if (clist != null) {
+            removeBallFromAll(); 
+
+            // Place the ball in a new random cup for the current round
+            if (!clist.isEmpty()) {
+                int newBallIndex = ran.nextInt(clist.size()); 
+                clist.get(newBallIndex).giveBall(); 
             }
         }
-
     }
 
-    // public void savescore(String username, int score) {
-    // try (PrintWriter out = new PrintWriter(new FileWriter("leaderboard.txt",
-    // true))) {
-    // out.println(username + " : " + score);
+    public void swapCupsByIndex(int index1, int index2) {
+        if (clist != null && index1 >= 0 && index1 < clist.size() && index2 >= 0 && index2 < clist.size()) {
+            Collections.swap(clist, index1, index2); // Perform the swap in the ArrayList
+        } else {
+            System.err.println("Invalid indices for swapping cups: " + index1 + ", " + index2 + " (List size: " + (clist == null ? "null" : clist.size()) + ")");
+        }
+    }
 
-    // } catch (Exception e) {
-    // System.out.println("Oh no! We encountered an exception in the code!");
-    // System.out.println("X X");
-    // System.out.println(" O ");
-    // }
-    // }
+    // Call the removeBall method on each Cup object
+    private void removeBallFromAll() {
+        if (clist != null) {
+            for (Cup cup : clist) {
+                cup.removeBall(); 
+            }
+        }
+    }
 
-    public void saveScore(String username, int Score) {
-        List<Score> leaderboard = new ArrayList<>();
 
-        File file = new File("leaderboard.txt");
-        if (file.exists()) {
+    public ArrayList<Cup> getCupList() {
+        return clist; 
+    }
+
+    public void saveScore(String username, int currentScore) {
+        List<ScoreEntry> leaderboard = new ArrayList<>(); 
+        File file = new File("leaderboard.txt"); 
+
+        // Read existing scores from the file if it exists and is not a directory
+        if (file.exists() && !file.isDirectory()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(" : ");
+                    String[] parts = line.split(" - "); 
                     if (parts.length == 2) {
-                        String user = parts[0];
-                        int userScore = Integer.parseInt(parts[1]);
-                        leaderboard.add(new Score(user, userScore));
+                        String userFromFile = parts[0].trim(); 
+                        try {
+                            int userScoreFromFile = Integer.parseInt(parts[1].trim()); 
+                            leaderboard.add(new ScoreEntry(userFromFile, userScoreFromFile)); // Add to leaderboard list
+                        } catch (NumberFormatException e) {
+                            System.err.println("Skipping malformed score line in leaderboard.txt: " + line);
+                        }
+                    } else {
+                         System.err.println("Skipping improperly formatted line in leaderboard.txt: " + line);
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Error reading leaderboard.txt: " + e.getMessage());
             }
         }
 
-        leaderboard.add(new Score(username, Score));
+        // Add the current player's score to the leaderboard list
+        leaderboard.add(new ScoreEntry(username, currentScore));
 
-        leaderboard.sort((s1, s2) -> Integer.compare(s2.score, s1.score));
+        // Sort the leaderboard list in descending order based on the score
+        leaderboard.sort((s1, s2) -> Integer.compare(s2.score, s1.score)); 
 
-        try (PrintWriter out = new PrintWriter(new FileWriter("leaderboard.txt"))) {
-            for (Score score : leaderboard) {
-                out.println(score);
+        // Write the complete and sorted leaderboard back to the file
+        try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
+            for (ScoreEntry entry : leaderboard) {
+                out.println(entry); 
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error writing to leaderboard.txt: " + e.getMessage());
         }
     }
 
+    public static class ScoreEntry { 
+        String username; 
+        int score;       
+
+        public ScoreEntry(String username, int score) {
+            this.username = username;
+            this.score = score;
+        }
+
+        @Override
+        public String toString() {
+            return username + " - " + score;
+        }
+    }
 }

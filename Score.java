@@ -8,6 +8,6 @@ public class Score {
     }
 
     public String toString() {
-        return username + " : " + score;
+        return username + " - " + score;
     }
 }
