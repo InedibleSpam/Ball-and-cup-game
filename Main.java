@@ -21,7 +21,7 @@ public class Main {
             throw new IllegalArgumentException("Number of cups must be positive.");
         }
 
-        // Create the specified number of cups with 1-based IDs
+        // Create the specified number of cups with IDs
         for (int i = 1; i <= numCups; i++) {
             Cup cup = new Cup(i);
             clist.add(cup);
@@ -44,12 +44,12 @@ public class Main {
         return null;
     }
 
-    //Shuffles cups and places the ball in a new random cup
+    //Shuffles cups and places the ball in new random cup
     public void shuffle() {
         if (clist != null) {
             removeBallFromAll(); 
 
-            // Place the ball in a new random cup for the current round
+            // Place the ball in a new random cup 
             if (!clist.isEmpty()) {
                 int newBallIndex = ran.nextInt(clist.size()); 
                 clist.get(newBallIndex).giveBall(); 
@@ -83,7 +83,7 @@ public class Main {
         List<ScoreEntry> leaderboard = new ArrayList<>(); 
         File file = new File("leaderboard.txt"); 
 
-        // Read existing scores from the file if it exists and is not a directory
+        // Read existing scores from the file
         if (file.exists() && !file.isDirectory()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 String line;
@@ -106,13 +106,13 @@ public class Main {
             }
         }
 
-        // Add the current player's score to the leaderboard list
+        // Add player's score to leaderboard 
         leaderboard.add(new ScoreEntry(username, currentScore));
 
-        // Sort the leaderboard list in descending order based on the score
+        // Sorts leaderboard based on the score
         leaderboard.sort((s1, s2) -> Integer.compare(s2.score, s1.score)); 
 
-        // Write the complete and sorted leaderboard back to the file
+        // Write the sorted leaderboard back to file
         try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
             for (ScoreEntry entry : leaderboard) {
                 out.println(entry); 
