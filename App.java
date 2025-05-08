@@ -61,6 +61,7 @@ public class App extends JFrame {
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
+                //I don't see a point in this existing. Mess with it a bit to see if it's needed.
                 super.paintComponent(g);
                 if(difficulty == 0){
                     g.drawImage(new ImageIcon("Background.jpg").getImage(), 0, 0, getWidth(), getHeight(), this);
@@ -139,8 +140,14 @@ public class App extends JFrame {
 
     }
 
+<<<<<<< HEAD
 
     public void startGame() {
+=======
+    
+//I removed the original startGame() method and replaced startRound() with it. 
+    private void startGame() {
+>>>>>>> 2b944e0e20dc618e8189959b5d581094052f8736
         canGuess = false;
         ballLabel.setVisible(false);
 
@@ -167,6 +174,7 @@ public class App extends JFrame {
             showBallTimer.setRepeats(false);
             showBallTimer.start();
         } else {
+            //Same goes for this message here. Unless one of us (I know Jaxon and I don't) uses this formatting, change it.
             System.err
                     .println("Error: Could not find the initial visual index of the cup with the ball after shuffle.");
             shuffleSteps();
@@ -176,8 +184,20 @@ public class App extends JFrame {
     // Handles guessing
     private void handleGuess(JButton clickedButton) {
         if (!canGuess) 
+<<<<<<< HEAD
         return; 
         int guessedIndex = -1;
+=======
+        return; // Ensure guessing is currently allowed
+        
+        int guessedIndex = -1; // Variable to store the index of the clicked button
+
+        
+        // Find the current index of the clicked button within the 'buttons' array.
+        // This array's order is synchronized with the logical cup list (Main.getCupList())
+        // after the shuffling animation is complete.
+       
+>>>>>>> 2b944e0e20dc618e8189959b5d581094052f8736
    
         for (int i = 0; i < buttons.length; i++) {
             if (buttons[i] == clickedButton) {
@@ -193,16 +213,33 @@ public class App extends JFrame {
                 score++; 
                 scoreLabel.setText(user + " - " + score); 
                 showBallUnderCup(guessedIndex);
+<<<<<<< HEAD
                 ballLabel.setVisible(true); 
 
                 // Handles when cups speed up
                 currentAnimationDuration = Math.max(minimumAnimationTime, currentAnimationDuration - 25);
                 currentPauseAfterSwap = Math.max(minimumPauseTime, currentPauseAfterSwap - 5);         
+=======
+                ballLabel.setVisible(true); // Make sure the ball is visible
+   
+                // --- Speed Up Animation ---
+                // Decrease duration and pause slightly, ensuring they don't go below minimums
+                currentAnimationDuration = Math.max(minimumAnimationTime, currentAnimationDuration - 25); // Decrease duration by 25ms (adjust '25' to change speed increment)
+                currentPauseAfterSwap = Math.max(minimumPauseTime, currentPauseAfterSwap - 5);         // Decrease pause by 5ms (adjust '5' to change speed increment)
+>>>>>>> 2b944e0e20dc618e8189959b5d581094052f8736
                 System.out.println("Correct! Speed increased. Next shuffle duration: " + currentAnimationDuration + "ms, pause: " + currentPauseAfterSwap + "ms");
    
+<<<<<<< HEAD
                 Timer newRoundTimer = new Timer(2000, e -> startGame());
                 newRoundTimer.setRepeats(false); 
                 newRoundTimer.start();
+=======
+   
+                // Start a timer to begin the next round after a short delay
+                Timer newRoundTimer = new Timer(2000, e -> startGame()); // 2000 ms = 2 seconds delay
+                newRoundTimer.setRepeats(false); // Ensure the timer only fires once
+                newRoundTimer.start(); // Start the timer
+>>>>>>> 2b944e0e20dc618e8189959b5d581094052f8736
    
             } else {
                 if (ballCupIndexVisual >= 0 && ballCupIndexVisual < buttons.length) {
@@ -235,12 +272,24 @@ public class App extends JFrame {
             JButton cupButton = buttons[cupIndex]; 
             Point cupLocation = cupButton.getLocation(); 
 
+<<<<<<< HEAD
             int ballX = cupLocation.x + (cupButton.getWidth() - ballLabel.getWidth()) / 2;
             int ballY = cupLocation.y + cupButton.getHeight() - (ballLabel.getHeight() / 2); 
+=======
+            // Calculate the horizontal position for the ball to be centered under the cup
+            int ballposX = cupLocation.x + (cupButton.getWidth() - ballLabel.getWidth()) / 2;
+            // Calculate the vertical position for the ball to be just below the cup's
+            // bottom edge
+            int ballposY = cupLocation.y + cupButton.getHeight() - (ballLabel.getHeight() / 2); // Adjust Y as needed
+>>>>>>> 2b944e0e20dc618e8189959b5d581094052f8736
 
             ballLabel.setLocation(ballX, ballY);
             
         } else {
+
+
+
+            //Perhaps this needs to be changed
             System.err.println("Error: Attempted to position ball under invalid cup index: " + cupIndex);
         }
     }
@@ -301,7 +350,40 @@ public class App extends JFrame {
         }
     }
 
+<<<<<<< HEAD
     // Handles the swapping of the cups and ball animation
+=======
+    /**
+     * Animates the visual swap of two JButton components representing cups.
+     * The buttons are located at the given indices (i and j) in the 'buttons' array
+     * *at the start* of this animation.
+     * The animation moves btn1 towards the starting location of btn2, and btn2
+     * towards the starting location of btn1.
+     * The ball label is moved along with the cup it was visually under (based on
+     * prevBallIndex).
+     * After the animation finishes, the references in the 'buttons' array at
+     * indices i and j are swapped
+     * to reflect their new visual positions, and the onComplete callback is
+     * executed.
+     *
+     * @param i             The index in the 'buttons' array of the first button
+     *                      involved in this swap.
+     * @param j             The index in the 'buttons' array of the second button
+     *                      involved in this swap.
+     * @param duration      The total duration in milliseconds for the animation of
+     *                      this single swap.
+     * @param onComplete    A Runnable to execute after the animation and the update
+     *                      to the 'buttons' array are complete.
+     * @param prevBallIndex The visual index of the ball *before* this specific swap
+     *                      step began.
+     */
+
+
+
+    
+    //I don't see why this requires a runnable when a runnable is never created to be put into it. (Unless I missed it)
+    
+>>>>>>> 2b944e0e20dc618e8189959b5d581094052f8736
     private void Swap(int i, int j, int duration, Runnable onComplete, int prevBallIndex) {
         JButton btn1 = buttons[i];
         JButton btn2 = buttons[j]; 
